@@ -96,6 +96,12 @@ Model A achieved a low BLEU score of 4.0. Because we restricted the vocabulary s
 
 
 Model B/C eliminates the `<unk>` problem. Rare English terminology is segmented into subwords (marked by `@@`) and translated into matching Italian morphological subwords. Even if the resulting sequence is not a perfectly natural Italian word, it retains the root meaning, which dramatically improves the unigram, bigram, and trigram precision measured by BLEU.
+
+### Manual Translation Analysis
+**Fluency and grammatical accuracy:** BPE outputs are noticeably more fluent and grammatically closer to natural Italian. Model A frequently produces broken or truncated sentences because key content words are replaced by `<unk>`, disrupting agreement and sentence structure.
+ 
+**Morphological handling:** Italian is a morphologically rich language with gendered nouns and inflected verb endings. BPE handles this better than the word-level model — by segmenting words into stems and suffixes, the model can generalise across inflected forms it may not have seen as whole tokens during training. Verb conjugations and noun plurals that collapse to `<unk>` in Model A are correctly produced in Models B and C.
+
  
 ### Translation Example
  
