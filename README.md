@@ -39,65 +39,72 @@ Download data:
 
 We chose `en-it`
 
-## Preprocessing pipeline:
-
-Tokenization: A reusable shell script scripts/tokenize.sh was implemented using sacremoses.
-
-    BPE Pipeline: A parameterized script scripts/build_bpe.sh was created to learn joint BPE models and extract raw vocabulary files (stripping frequency counts as required by JoeyNMT).
-
-Experimental Setup:
-
-    Model A (Baseline): Word-level model, vocabulary limit: 2000, tied_embeddings: False.
-
-    Model B: BPE-level model, vocabulary size: 2000, tied_embeddings: True.
-
-    Model C: BPE-level model, vocabulary size: 4000, tied_embeddings: True.
-
-Training Configurations:
-
-    Three separate .yaml configuration files were created in the configs/ directory to facilitate these experiments.
-
-    Training was performed on GPU by setting use_cuda: True.
-
-Bash
-
+## Preprocessing Pipeline
+ 
+**Tokenization:** A reusable shell script `scripts/tokenize.sh` was implemented using sacremoses.
+ 
+**BPE Pipeline:** A parameterized script `scripts/build_bpe.sh` was created to learn joint BPE models and extract raw vocabulary files (stripping frequency counts as required by JoeyNMT).
+ 
+**Experimental Setup:**
+ 
+- **Model A (Baseline):** Word-level model, vocabulary limit: 2000, `tied_embeddings: False`
+- **Model B:** BPE-level model, vocabulary size: 2000, `tied_embeddings: True`
+- **Model C:** BPE-level model, vocabulary size: 4000, `tied_embeddings: True`
+**Training Configurations:**
+ 
+- Three separate `.yaml` configuration files were created in the `configs/` directory to facilitate these experiments.
+- Training was performed on GPU by setting `use_cuda: True`.
+```bash
 ./scripts/tokenize.sh
 ./scripts/build_bpe.sh 2000
 ./scripts/build_bpe.sh 4000
+```
+ 
+**Train the model:** Ensure you have defined the correct `model_name` (e.g., `model_a_word`, `model_b_bpe2000`, or `model_c_bpe4000`) within the script.
+ 
+```bash
+./scripts/train.sh
+```
+ 
+*The training process can be interrupted at any time. The best checkpoint will always be saved automatically.*
+ 
+**Evaluate the model:**
+ 
+```bash
+./scripts/evaluate.sh
+```
+ 
+---
 
-Train the model: Ensure you have defined the correct model_name (e.g., model_a_word, model_b_bpe2000, or model_c_bpe4000) within the script.
-
-       ./scripts/train.sh
-
-*the training process can be interrupted at any time. The best checkpoint will always be saved automatically.
-
-Evaluate the model:
-
-       ./scripts/evaluate.sh
-
-
-# Findings: 
-
-
+# Findings
+ 
 ## Part 1: Experiments with Byte Pair Encoding (BPE)
-
+ 
 We evaluated three different architectural approaches to vocabulary construction using the **en-it** (English to Italian) translation direction.
-
-While the word-based model almost exclusively generates <unk> for unknown words, the BPE models almost always produce fluent, readable sentences, even if their grammatical correctness could still be improved.
-
+ 
+While the word-based model almost exclusively generates `<unk>` for unknown words, the BPE models almost always produce fluent, readable sentences, even if their grammatical correctness could still be improved.
+ 
 ### Quantitative Evaluation (BLEU Scores)
-
+ 
 | Model | Vocabulary Type | Vocabulary Size | BLEU Score |
 | :--- | :--- | :--- | :--- |
 | **Model A** | Word-level (with Threshold) | 2,000 | **4.0** |
 | **Model B** | BPE-level | 2,000 | *9.3* |
 | **Model C** | BPE-level | 4,000 | *9.8* |
+ 
+Model A achieved a low BLEU score of 4.0. Because we restricted the vocabulary size to a strict limit of 2,000 whole words to keep the training computationally manageable, an overwhelming majority of unique words in the training and testing sets were forced into the unknown token mapping (`<unk>`).
 
-Model A achieved a low BLEU score of 4.0. Because we restricted the vocabulary size to a strict limit of 2,000 whole words to keep the training computationally manageable, an overwhelming majority of unique words in the training and testing sets were forced into the unknown token mapping (<unk>).
 
-Model B/C eliminates the<unk>problem. Rare English terminology is segmented into subwords (marked by @@) and translated into matching Italian morphological subwords. Even if the resulting sequence is not a perfectly natural Italian word, it retains the root meaning, which dramatically improves the unigram, bigram, and trigram precision measured by BLEU.
-
-Source Text: "The arctic ice cap is , in a sense , the beating heart of the global climate system ."  Reference Translation: "La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale ."  Model A (Word-Level) Output: "Il <unk> <unk> è , in un certo senso , il cuore del sistema climatico ."  Model C (BPE-Level) Output: "La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale ."
+Model B/C eliminates the `<unk>` problem. Rare English terminology is segmented into subwords (marked by `@@`) and translated into matching Italian morphological subwords. Even if the resulting sequence is not a perfectly natural Italian word, it retains the root meaning, which dramatically improves the unigram, bigram, and trigram precision measured by BLEU.
+ 
+### Translation Example
+ 
+| | Text |
+| :--- | :--- |
+| **Source (EN)** | The arctic ice cap is , in a sense , the beating heart of the global climate system . |
+| **Reference (IT)** | La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale . |
+| **Model A output** | Il `<unk>` `<unk>` è , in un certo senso , il cuore del sistema climatico . |
+| **Model C output** | La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale . |
 
 
 ## For Windows (Command Prompt / PowerShell users)
