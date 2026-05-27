@@ -16,7 +16,7 @@ SECONDS=0
 
 logs=$base/logs
 
-model_name=?
+model_name=model_c_bpe4000
 
 mkdir -p $logs
 
