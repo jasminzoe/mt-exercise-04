@@ -39,7 +39,7 @@ Download data:
 
 We chose `en-it`
 
-# Preprocessing pipeline:
+## Preprocessing pipeline:
 
 Tokenization: A reusable shell script scripts/tokenize.sh was implemented using sacremoses.
 
@@ -74,6 +74,23 @@ Train the model: Ensure you have defined the correct model_name (e.g., model_a_w
 Evaluate the model:
 
        ./scripts/evaluate.sh
+
+
+# Findings: 
+
+model_a_word:
+       {
+ "name": "BLEU",
+ "score": 4.0,
+ "signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+ "verbose_score": "18.9/5.6/2.4/1.0 (BP = 1.000 ratio = 1.613 hyp_len = 45877 ref_len = 28445)",
+ "nrefs": "1",
+ "case": "mixed",
+ "eff": "no",
+ "tok": "13a",
+ "smooth": "exp",
+ "version": "2.6.0"
+}
 
 ## For Windows (Command Prompt / PowerShell users)
 Manually create and activate a virtual environment:
