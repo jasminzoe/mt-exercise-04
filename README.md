@@ -35,12 +35,37 @@ Install required dependencies - Follow the instructions provided in the exercise
 
 Download data:
 
-       python ./scripts/download_huggingface_data.py --src en --trg nl --out data
+       python ./scripts/download_huggingface_data.py --src en --trg it --out data
 
-You can choose any supported direction except `de-en`. Good options are `en-nl`, `en-it`, `en-ro`, `nl-en`, `it-en`, or `ro-en`.
+We chose `en-it`
 
+# Preprocessing pipeline:
 
-Train the model:
+Tokenization: A reusable shell script scripts/tokenize.sh was implemented using sacremoses.
+
+    BPE Pipeline: A parameterized script scripts/build_bpe.sh was created to learn joint BPE models and extract raw vocabulary files (stripping frequency counts as required by JoeyNMT).
+
+Experimental Setup:
+
+    Model A (Baseline): Word-level model, vocabulary limit: 2000, tied_embeddings: False.
+
+    Model B: BPE-level model, vocabulary size: 2000, tied_embeddings: True.
+
+    Model C: BPE-level model, vocabulary size: 4000, tied_embeddings: True.
+
+Training Configurations:
+
+    Three separate .yaml configuration files were created in the configs/ directory to facilitate these experiments.
+
+    Training was performed on GPU by setting use_cuda: True.
+
+Bash
+
+./scripts/tokenize.sh
+./scripts/build_bpe.sh 2000
+./scripts/build_bpe.sh 4000
+
+Train the model: Ensure you have defined the correct model_name (e.g., model_a_word, model_b_bpe2000, or model_c_bpe4000) within the script.
 
        ./scripts/train.sh
 
