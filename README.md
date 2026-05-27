@@ -78,19 +78,27 @@ Evaluate the model:
 
 # Findings: 
 
-model_a_word:
-       {
- "name": "BLEU",
- "score": 4.0,
- "signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
- "verbose_score": "18.9/5.6/2.4/1.0 (BP = 1.000 ratio = 1.613 hyp_len = 45877 ref_len = 28445)",
- "nrefs": "1",
- "case": "mixed",
- "eff": "no",
- "tok": "13a",
- "smooth": "exp",
- "version": "2.6.0"
-}
+
+## Part 1: Experiments with Byte Pair Encoding (BPE)
+
+We evaluated three different architectural approaches to vocabulary construction using the **en-it** (English to Italian) translation direction.
+
+While the word-based model almost exclusively generates <unk> for unknown words, the BPE models almost always produce fluent, readable sentences, even if their grammatical correctness could still be improved.
+
+### Quantitative Evaluation (BLEU Scores)
+
+| Model | Vocabulary Type | Vocabulary Size | BLEU Score |
+| :--- | :--- | :--- | :--- |
+| **Model A** | Word-level (with Threshold) | 2,000 | **4.0** |
+| **Model B** | BPE-level | 2,000 | *9.3* |
+| **Model C** | BPE-level | 4,000 | *9.8* |
+
+Model A achieved a low BLEU score of 4.0. Because we restricted the vocabulary size to a strict limit of 2,000 whole words to keep the training computationally manageable, an overwhelming majority of unique words in the training and testing sets were forced into the unknown token mapping (<unk>).
+
+Model B/C eliminates the<unk>problem. Rare English terminology is segmented into subwords (marked by @@) and translated into matching Italian morphological subwords. Even if the resulting sequence is not a perfectly natural Italian word, it retains the root meaning, which dramatically improves the unigram, bigram, and trigram precision measured by BLEU.
+
+Source Text: "The arctic ice cap is , in a sense , the beating heart of the global climate system ."  Reference Translation: "La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale ."  Model A (Word-Level) Output: "Il <unk> <unk> è , in un certo senso , il cuore del sistema climatico ."  Model C (BPE-Level) Output: "La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale ."
+
 
 ## For Windows (Command Prompt / PowerShell users)
 Manually create and activate a virtual environment:
