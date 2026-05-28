@@ -114,10 +114,10 @@ Model B/C eliminates the `<unk>` problem. Rare English terminology is segmented 
 
 ## Part 2:  Impact of beam size on translation quality
 
-The BLEU score already increased significantly when increasing the beam size from 1 to 2 and kept on increasing until beamsize 4. With larger beamsize than 4, the BLEU score remained more uniform with only a little decrease. :So the best BLEU score was achieved at Beamsize 4.
-At the same time, decoding time increased with larger beam sizes. While beam size 4 required around 131 seconds, beam size 10 required almost 387 seconds.
+The BLEU score already increased significantly with the beam size from 1 to 2 and kept increasing until beamsize 4. With larger beamsize than 4, the BLEU score remained more uniform with only a little decrease. The best BLEU score was achieved at Beamsize 4.
+At the same time, generation time increased with larger beam sizes. While beam size 4 required around 131 seconds, beam size 10 required almost 387 seconds.
 
-This shows that larger beam sizes can improve translation quality up to a certain point, but also increase computational cost. Based on these evaluations, beam size 4 seems to be the best balance between translation quality and runtime for this model.
+This shows that larger beam sizes can improve translation quality up to a certain point, but also increase computational cost, because the model could consider several possible translation hypotheses at the same time instead of immediately choosing the most probable next word. Based on these evaluations, beam size 4 seems to be the best balance between translation quality and runtime for this model.
 
 
 ## For Windows (Command Prompt / PowerShell users)
