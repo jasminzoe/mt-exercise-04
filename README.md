@@ -112,6 +112,13 @@ Model B/C eliminates the `<unk>` problem. Rare English terminology is segmented 
 | **Model A output** | Il `<unk>` `<unk>` è , in un certo senso , il cuore del sistema climatico . |
 | **Model C output** | La calotta glaciale artica è , in un certo senso , il cuore pulsante del sistema climatico globale . |
 
+## Part 2:  Impact of beam size on translation quality
+
+The BLEU score already increased significantly when increasing the beam size from 1 to 2 and kept on increasing until beamsize 4. With larger beamsize than 4, the BLEU score remained more uniform with only a little decrease. :So the best BLEU score was achieved at Beamsize 4.
+At the same time, decoding time increased with larger beam sizes. While beam size 4 required around 131 seconds, beam size 10 required almost 387 seconds.
+
+This shows that larger beam sizes can improve translation quality up to a certain point, but also increase computational cost. Based on these evaluations, beam size 4 seems to be the best balance between translation quality and runtime for this model.
+
 
 ## For Windows (Command Prompt / PowerShell users)
 Manually create and activate a virtual environment:
